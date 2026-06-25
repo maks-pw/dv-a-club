@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CalendarDays, Crown, Phone } from "lucide-react";
 
 const navItems = [
-  { name: "Программы", path: "/" },
-  { name: "Клуб", path: "/club" },
-  { name: "Контакты", path: "/contacts" },
+  { name: "События", path: "/", icon: <CalendarDays size={20} strokeWidth={1.5} /> },
+  { name: "Клуб", path: "/club", icon: <Crown size={20} strokeWidth={1.5} /> },
+  { name: "Контакты", path: "/contacts", icon: <Phone size={20} strokeWidth={1.5} /> },
 ];
 
 export default function Sidebar() {
@@ -16,21 +17,23 @@ export default function Sidebar() {
     <div className="sidebar-container">
       {/* Mobile-only Header */}
       <header className="sidebar-mobile-header">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/icon-logo.svg" alt="DVAC Crest" className="brand-crest-mobile" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/text-logo.svg" alt="DVAesthetic Club" className="brand-text-logo-mobile" />
+        <Link href="/" className="brand-logo-link-mobile">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icon-logo.svg" alt="DVAC Crest" className="brand-crest-mobile" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/text-logo.svg" alt="DVAesthetic Club" className="brand-text-logo-mobile" />
+        </Link>
       </header>
 
       {/* Slanted Panel (Desktop only) */}
       <div className="sidebar-slant-panel">
         {/* Ornate Gold Logo Crest */}
-        <div className="brand-logo-wrapper">
+        <Link href="/" className="brand-logo-wrapper">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/icon-logo.svg" alt="DVAC Crest" className="brand-crest" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/text-logo.svg" alt="DVAesthetic Club" className="brand-text-logo" />
-        </div>
+        </Link>
 
         {/* Navigation Menu */}
         <nav className="sidebar-slant-nav">
@@ -57,9 +60,10 @@ export default function Sidebar() {
             <Link
               key={item.name}
               href={item.path}
-              className={`sidebar-slant-link ${isActive ? "active" : ""}`}
+              className={`sidebar-mobile-link ${isActive ? "active" : ""}`}
             >
-              {item.name}
+              <span className="mobile-nav-icon">{item.icon}</span>
+              <span className="mobile-nav-label">{item.name}</span>
             </Link>
           );
         })}

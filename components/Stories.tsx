@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 
 interface StorySlide {
   id: string;
@@ -75,6 +76,7 @@ const STORIES_DATA: ProgramStory[] = [
 export default function Stories() {
   const [programs, setPrograms] = useState<ProgramStory[]>(STORIES_DATA);
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [activeStoryIndex, setActiveStoryIndex] = useState(0);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -89,11 +91,20 @@ export default function Stories() {
   const [isSwiping, setIsSwiping] = useState(false);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
   const isSwipingY = useRef(false);
   const pressTimer = useRef<NodeJS.Timeout | null>(null);
   const isLongPress = useRef(false);
+  const touchStartTime = useRef(0);
+  const mouseStartTime = useRef(0);
+  const translateYRef = useRef(0);
+
+  const updateTranslateY = (val: number) => {
+    translateYRef.current = val;
+    setTranslateY(val);
+  };
 
   const SLIDE_DURATION = 5000; // 5 seconds per slide
 
@@ -110,7 +121,7 @@ export default function Stories() {
     setActiveSlideIndex(0);
     setProgress(0);
     setIsPaused(false);
-    setTranslateY(0);
+    updateTranslateY(0);
     setIsSwiping(false);
     setIsOpen(true);
     dialogRef.current?.showModal();
@@ -127,15 +138,29 @@ export default function Stories() {
     }
   };
 
-  // Scroll-lock effect
+  // Mount effect for Portal rendering
+  useEffect(() => {
+    let active = true;
+    requestAnimationFrame(() => {
+      if (active) setMounted(true);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Scroll-lock & body class effect
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      document.body.classList.add("stories-open");
     } else {
       document.body.style.overflow = "";
+      document.body.classList.remove("stories-open");
     }
     return () => {
       document.body.style.overflow = "";
+      document.body.classList.remove("stories-open");
     };
   }, [isOpen]);
 
@@ -242,80 +267,136 @@ export default function Stories() {
     }
   };
 
-  // Gesture Handlers
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    touchStartY.current = e.touches[0].clientY;
-    touchStartX.current = e.touches[0].clientX;
-    isSwipingY.current = false;
-    isLongPress.current = false;
+  // Create refs to hold the latest touch handlers so that event listeners
+  // bound with { passive: false } don't need to be recreated when dependencies change.
+  const touchStartRef = useRef<((e: TouchEvent) => void) | null>(null);
+  const touchMoveRef = useRef<((e: TouchEvent) => void) | null>(null);
+  const touchEndRef = useRef<((e: TouchEvent) => void) | null>(null);
 
-    pressTimer.current = setTimeout(() => {
-      setIsPaused(true);
-      isLongPress.current = true;
-    }, 200);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    const currentY = e.touches[0].clientY;
-    const currentX = e.touches[0].clientX;
-    const diffY = currentY - touchStartY.current;
-    const diffX = currentX - touchStartX.current;
-
-    // Detect downward vertical swipe
-    if (!isSwipingY.current && Math.abs(diffY) > Math.abs(diffX) && diffY > 10) {
-      isSwipingY.current = true;
-      setIsSwiping(true);
-      if (pressTimer.current) clearTimeout(pressTimer.current);
-      setIsPaused(true);
-    }
-
-    if (isSwipingY.current && diffY > 0) {
-      // Direct drag mapping
-      setTranslateY(diffY);
-    }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (pressTimer.current) clearTimeout(pressTimer.current);
-
-    if (isSwipingY.current) {
-      setIsSwiping(false);
-      if (translateY > 120) {
-        closeModal();
-      } else {
-        setTranslateY(0);
-        setIsPaused(false);
+  // Keep the refs updated with the latest handler logic
+  useEffect(() => {
+    touchStartRef.current = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest("button") || target.closest("a")) {
+        return;
       }
-    } else {
-      setIsPaused(false);
-      if (!isLongPress.current) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const clientX = e.changedTouches[0].clientX;
-        const relativeX = clientX - rect.left;
 
-        if (relativeX < rect.width * 0.35) {
-          handlePrevSlide();
+      // Prevent mouse simulation (ghost clicks)
+      e.preventDefault();
+      touchStartTime.current = Date.now();
+      touchStartY.current = e.touches[0].clientY;
+      touchStartX.current = e.touches[0].clientX;
+      isSwipingY.current = false;
+      isLongPress.current = false;
+
+      pressTimer.current = setTimeout(() => {
+        setIsPaused(true);
+        isLongPress.current = true;
+      }, 250); // 250ms hold
+    };
+
+    touchMoveRef.current = (e: TouchEvent) => {
+      const currentY = e.touches[0].clientY;
+      const currentX = e.touches[0].clientX;
+      const diffY = currentY - touchStartY.current;
+      const diffX = currentX - touchStartX.current;
+
+      // Detect downward vertical swipe
+      if (!isSwipingY.current && Math.abs(diffY) > Math.abs(diffX) && diffY > 10) {
+        isSwipingY.current = true;
+        setIsSwiping(true);
+        if (pressTimer.current) clearTimeout(pressTimer.current);
+        setIsPaused(true);
+      }
+
+      if (isSwipingY.current && diffY > 0) {
+        updateTranslateY(diffY);
+      }
+    };
+
+    touchEndRef.current = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest("button") || target.closest("a")) {
+        return;
+      }
+
+      e.preventDefault();
+      if (pressTimer.current) clearTimeout(pressTimer.current);
+
+      if (isSwipingY.current) {
+        setIsSwiping(false);
+        if (translateYRef.current > 120) {
+          closeModal();
         } else {
-          handleNextSlide();
+          updateTranslateY(0);
+          setIsPaused(false);
+        }
+      } else {
+        setIsPaused(false);
+        
+        const touchDuration = Date.now() - touchStartTime.current;
+        // Quick tap check: if touch was short enough, perform navigation
+        if (touchDuration < 350) {
+          const rect = cardRef.current?.getBoundingClientRect();
+          if (rect) {
+            const clientX = e.changedTouches[0].clientX;
+            const relativeX = clientX - rect.left;
+
+            if (relativeX < rect.width * 0.35) {
+              handlePrevSlide();
+            } else {
+              handleNextSlide();
+            }
+          }
         }
       }
-    }
-  };
+    };
+  });
+
+  // Bind the native event listeners on open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const card = cardRef.current;
+    if (!card) return;
+
+    const handleNativeTouchStart = (e: TouchEvent) => {
+      touchStartRef.current?.(e);
+    };
+    const handleNativeTouchMove = (e: TouchEvent) => {
+      touchMoveRef.current?.(e);
+    };
+    const handleNativeTouchEnd = (e: TouchEvent) => {
+      touchEndRef.current?.(e);
+    };
+
+    card.addEventListener("touchstart", handleNativeTouchStart, { passive: false });
+    card.addEventListener("touchmove", handleNativeTouchMove, { passive: false });
+    card.addEventListener("touchend", handleNativeTouchEnd, { passive: false });
+
+    return () => {
+      card.removeEventListener("touchstart", handleNativeTouchStart);
+      card.removeEventListener("touchmove", handleNativeTouchMove);
+      card.removeEventListener("touchend", handleNativeTouchEnd);
+    };
+  }, [isOpen]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.button !== 0) return; // Only track left-click
+    mouseStartTime.current = Date.now();
     isLongPress.current = false;
     pressTimer.current = setTimeout(() => {
       setIsPaused(true);
       isLongPress.current = true;
-    }, 200);
+    }, 250);
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     if (pressTimer.current) clearTimeout(pressTimer.current);
     setIsPaused(false);
 
-    if (!isLongPress.current) {
+    const clickDuration = Date.now() - mouseStartTime.current;
+    if (clickDuration < 300) {
       const rect = e.currentTarget.getBoundingClientRect();
       const relativeX = e.clientX - rect.left;
 
@@ -448,125 +529,126 @@ export default function Stories() {
       </div>
 
       {/* Stories Modal Dialog */}
-      <dialog
-        ref={dialogRef}
-        className="stories-modal-dialog"
-        onClose={handleDialogClose}
-        onClick={handleBackdropClick}
-      >
-        {isOpen && currentStory && (
-          <div className="story-modal-wrapper">
-            {/* Desktop Left Navigation Button */}
-            <button
-              className="story-nav-btn story-nav-btn-left"
-              onClick={(e) => handleArrowClick(e, "prev")}
-              aria-label="Предыдущий слайд"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
+      {mounted && createPortal(
+        <dialog
+          ref={dialogRef}
+          className="stories-modal-dialog"
+          onClose={handleDialogClose}
+          onClick={handleBackdropClick}
+        >
+          {isOpen && currentStory && (
+            <div className="story-modal-wrapper">
+              {/* Desktop Left Navigation Button */}
+              <button
+                className="story-nav-btn story-nav-btn-left"
+                onClick={(e) => handleArrowClick(e, "prev")}
+                aria-label="Предыдущий слайд"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
 
-            {/* 9:16 Card Container */}
-            <div
-              className={`story-card ${isSwiping ? "swiping" : ""}`}
-              style={{
-                transform: translateY > 0 ? `translateY(${translateY}px)` : undefined,
-                opacity: translateY > 0 ? Math.max(1 - translateY / 400, 0.4) : undefined,
-                transition: isSwiping ? "none" : "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease",
-              }}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              onMouseDown={handleMouseDown}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseLeave}
-            >
-              {/* Slide Image */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={currentStory.slides[activeSlideIndex].url}
-                alt={currentStory.slides[activeSlideIndex].title}
-                className="story-card-image"
-                draggable={false}
-              />
+              {/* 9:16 Card Container */}
+              <div
+                ref={cardRef}
+                className={`story-card ${isSwiping ? "swiping" : ""}`}
+                style={{
+                  transform: translateY > 0 ? `translateY(${translateY}px)` : undefined,
+                  opacity: translateY > 0 ? Math.max(1 - translateY / 400, 0.4) : undefined,
+                  transition: isSwiping ? "none" : "transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease",
+                }}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseLeave}
+              >
+                {/* Slide Image */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={currentStory.slides[activeSlideIndex].url}
+                  alt={currentStory.slides[activeSlideIndex].title}
+                  className="story-card-image"
+                  draggable={false}
+                />
 
-              {/* Progress Bars & Header Container */}
-              <div className="story-card-header-overlay">
-                <div className="story-progress-indicator-bar">
-                  {currentStory.slides.map((slide, idx) => {
-                    let width = "0%";
-                    if (idx < activeSlideIndex) {
-                      width = "100%";
-                    } else if (idx === activeSlideIndex) {
-                      width = `${progress}%`;
-                    }
-                    return (
-                      <div key={slide.id} className="story-progress-segment-bg">
-                        <div
-                          className="story-progress-segment-fill"
-                          style={{ width }}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="story-author-details-row">
-                  <div className="story-author-avatar-badge">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={currentStory.image} alt={currentStory.name} />
+                {/* Progress Bars & Header Container */}
+                <div className="story-card-header-overlay">
+                  <div className="story-progress-indicator-bar">
+                    {currentStory.slides.map((slide, idx) => {
+                      let width = "0%";
+                      if (idx < activeSlideIndex) {
+                        width = "100%";
+                      } else if (idx === activeSlideIndex) {
+                        width = `${progress}%`;
+                      }
+                      return (
+                        <div key={slide.id} className="story-progress-segment-bg">
+                          <div
+                            className="story-progress-segment-fill"
+                            style={{ width }}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
-                  <span className="story-author-name-text">{currentStory.name}</span>
-                  <span className="story-slide-index-indicator">
-                    {activeSlideIndex + 1}/{currentStory.slides.length}
-                  </span>
 
-                  <button
-                    className="story-card-close-btn"
-                    onClick={handleCloseClick}
-                    aria-label="Закрыть"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
+                  <div className="story-author-details-row">
+                    <div className="story-author-avatar-badge">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={currentStory.image} alt={currentStory.name} />
+                    </div>
+                    <span className="story-author-name-text">{currentStory.name}</span>
+                    <span className="story-slide-index-indicator">
+                      {activeSlideIndex + 1}/{currentStory.slides.length}
+                    </span>
+
+                    <button
+                      className="story-card-close-btn"
+                      onClick={handleCloseClick}
+                      aria-label="Закрыть"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Bottom Caption Overlay */}
+                <div className="story-card-caption-overlay">
+                  <h3 className="story-card-caption-title">
+                    {currentStory.slides[activeSlideIndex].title}
+                  </h3>
+                  <p className="story-card-caption-desc">
+                    {currentStory.slides[activeSlideIndex].description}
+                  </p>
                 </div>
               </div>
 
-              {/* Bottom Caption Overlay */}
-              <div className="story-card-caption-overlay">
-                <h3 className="story-card-caption-title">
-                  {currentStory.slides[activeSlideIndex].title}
-                </h3>
-                <p className="story-card-caption-desc">
-                  {currentStory.slides[activeSlideIndex].description}
-                </p>
-              </div>
+              {/* Desktop Right Navigation Button */}
+              <button
+                className="story-nav-btn story-nav-btn-right"
+                onClick={(e) => handleArrowClick(e, "next")}
+                aria-label="Следующий слайд"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
-
-            {/* Desktop Right Navigation Button */}
-            <button
-              className="story-nav-btn story-nav-btn-right"
-              onClick={(e) => handleArrowClick(e, "next")}
-              aria-label="Следующий слайд"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-        )}
-      </dialog>
+          )}
+        </dialog>,
+        document.body
+      )}
     </div>
   );
 }
