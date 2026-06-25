@@ -15,11 +15,16 @@
   margin: 0;
 }
 
-html,
-body {
+html {
   height: 100%;
+  overflow-y: scroll; /* Force vertical scrollbar on the viewport */
+  scrollbar-gutter: stable; /* Avoid layout shifts when scrollbar appears */
+  background-color: var(--background);
+}
+
+body {
+  min-height: 100%;
   max-width: 100vw;
-  overflow: hidden;
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-montserrat), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -36,15 +41,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-cormorant), Georgia, serif;
 }
 
-/* Responsive Grid Layout Container */
+/* Responsive Layout Container */
 .layout-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr auto;
-  grid-template-areas:
-    "content"
-    "sidebar";
-  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
   background-color: var(--background);
   max-width: 1200px;
   margin-inline: auto;
@@ -55,10 +56,9 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (min-width: 768px) {
   .layout-container {
+    display: grid;
     grid-template-columns: var(--sidebar-width) 1fr;
-    grid-template-rows: 1fr;
-    grid-template-areas:
-      "sidebar content";
+    grid-template-areas: "sidebar content";
     padding-inline: 24px;
     /* Side padding for desktop */
     padding-block: 0;
@@ -72,8 +72,22 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: auto;
   overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .layout-sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+  }
+}
+
+@media (max-width: 767px) {
+  .layout-sidebar {
+    display: contents;
+  }
 }
 
 /* Sidebar Slanted Panel */
@@ -213,12 +227,10 @@ h1, h2, h3, h4, h5, h6 {
 /* Scrollable Right Section Container */
 .layout-content-scrollable {
   grid-area: content;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: auto;
   min-height: 0;
-  scrollbar-gutter: stable;
 }
 
 @media (min-width: 768px) {
@@ -230,26 +242,26 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 767px) {
   .layout-content-scrollable {
-    padding: 16px 0;
-    /* Clear horizontal padding since container already provides 16px */
+    padding: 16px 0 96px 0; /* Add bottom padding to clear mobile fixed bottom nav bar (96px) */
     gap: 16px;
   }
 }
 
-.layout-content-scrollable::-webkit-scrollbar {
-  width: 6px;
+/* Custom premium scrollbar for viewport */
+html::-webkit-scrollbar {
+  width: 8px;
 }
 
-.layout-content-scrollable::-webkit-scrollbar-track {
-  background: transparent;
+html::-webkit-scrollbar-track {
+  background: var(--background);
 }
 
-.layout-content-scrollable::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb {
   background: #222226;
   border-radius: 10px;
 }
 
-.layout-content-scrollable::-webkit-scrollbar-thumb:hover {
+html::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
 
@@ -789,5 +801,220 @@ h1,
 
   .story-card-caption-desc {
     font-size: 0.9rem;
+  }
+}
+
+/* Bell Notification Tooltip Styles */
+.stories-bell-container {
+  position: relative;
+  display: inline-flex;
+}
+
+.stories-notification-bell.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 0 12px rgba(197, 168, 128, 0.25);
+  background-color: rgba(197, 168, 128, 0.05);
+}
+
+.bell-tooltip-popover {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 290px;
+  padding: 18px;
+  background-color: rgba(28, 28, 30, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(197, 168, 128, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 
+              0 0 20px rgba(197, 168, 128, 0.03);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: auto;
+  animation: tooltipFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bell-tooltip-text {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  margin: 0;
+  text-align: left;
+  padding-right: 14px; /* Space for close button */
+}
+
+.bell-tooltip-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.bell-tooltip-close-btn:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.bell-tooltip-close-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.bell-tooltip-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-weight: 600;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.bell-tooltip-link:hover {
+  color: var(--gold-hover);
+  transform: translateX(3px);
+  text-shadow: 0 0 10px rgba(197, 168, 128, 0.35);
+}
+
+.tg-mini-icon {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+@media (max-width: 767px) {
+  .bell-tooltip-popover {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-width: none;
+    z-index: 1000;
+    padding: 16px;
+    border-radius: 16px;
+    border-color: rgba(197, 168, 128, 0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), 
+                0 0 25px rgba(197, 168, 128, 0.08);
+    transform: translateY(-20px);
+    animation: slideDownNotification 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+@keyframes slideDownNotification {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Navigation & Header Layout Styles */
+.sidebar-mobile-header {
+  display: none;
+}
+
+.sidebar-mobile-nav {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  /* Hide desktop slanted panel on mobile */
+  .sidebar-slant-panel {
+    display: none !important;
+  }
+
+  /* Style mobile top header (scrollable) */
+  .sidebar-mobile-header {
+    display: flex;
+    position: relative;
+    width: calc(100% + 32px);
+    margin-inline: -16px;
+    height: 80px;
+    background-color: var(--background);
+    border-top: 4px solid var(--gold);
+    border-bottom: 1px solid #1c1c1e;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+  }
+
+  .brand-crest-mobile {
+    position: absolute;
+    left: 16px;
+    height: 38px;
+    width: auto;
+  }
+
+  .brand-text-logo-mobile {
+    height: 38px;
+    width: auto;
+  }
+
+  /* Style mobile fixed bottom nav bar */
+  .sidebar-mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    height: 64px;
+    background-color: rgba(28, 28, 30, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    z-index: 100;
+  }
+
+  .sidebar-mobile-nav .sidebar-slant-link {
+    font-family: var(--font-cormorant), Georgia, serif;
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .sidebar-mobile-nav .sidebar-slant-link.active,
+  .sidebar-mobile-nav .sidebar-slant-link:hover {
+    color: #ffffff;
+    text-decoration-color: var(--gold);
   }
 }

@@ -14,7 +14,15 @@ export default function Sidebar() {
 
   return (
     <div className="sidebar-container">
-      {/* Slanted top panel matching reference */}
+      {/* Mobile-only Header */}
+      <header className="sidebar-mobile-header">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/icon-logo.svg" alt="DVAC Crest" className="brand-crest-mobile" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/text-logo.svg" alt="DVAesthetic Club" className="brand-text-logo-mobile" />
+      </header>
+
+      {/* Slanted Panel (Desktop only) */}
       <div className="sidebar-slant-panel">
         {/* Ornate Gold Logo Crest */}
         <div className="brand-logo-wrapper">
@@ -40,6 +48,22 @@ export default function Sidebar() {
           })}
         </nav>
       </div>
+
+      {/* Mobile Fixed Navigation Bottom Bar */}
+      <nav className="sidebar-mobile-nav">
+        {navItems.map((item) => {
+          const isActive = pathname === item.path;
+          return (
+            <Link
+              key={item.name}
+              href={item.path}
+              className={`sidebar-slant-link ${isActive ? "active" : ""}`}
+            >
+              {item.name}
+            </Link>
+          );
+        })}
+      </nav>
 
       {/* Privacy links at the bottom left - Desktop only */}
       <footer className="sidebar-privacy-footer sidebar-desktop-only">

@@ -80,6 +80,10 @@ export default function Stories() {
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
+  // Notification Bell States
+  const [isBellOpen, setIsBellOpen] = useState(false);
+  const bellWrapperRef = useRef<HTMLDivElement>(null);
+
   // Touch and Swipe Gesture States
   const [translateY, setTranslateY] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
@@ -209,6 +213,20 @@ export default function Stories() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, handleNextSlide, handlePrevSlide]);
+
+  // Click outside notification bell wrapper to close the popover
+  useEffect(() => {
+    if (!isBellOpen) return;
+
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (bellWrapperRef.current && !bellWrapperRef.current.contains(e.target as Node)) {
+        setIsBellOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, [isBellOpen]);
 
   const handleProgramClick = (id: string) => {
     setPrograms((prev) =>
@@ -358,35 +376,75 @@ export default function Stories() {
         {/* Separator line stretching to the bell */}
         <div className="stories-horizontal-divider"></div>
 
-        {/* Premium Notification Bell Button */}
-        <button className="stories-notification-bell" aria-label="Уведомления">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="bell-svg-icon"
+        {/* Premium Notification Bell Wrapper */}
+        <div className="stories-bell-container" ref={bellWrapperRef}>
+          <button
+            className={`stories-notification-bell ${isBellOpen ? "active" : ""}`}
+            onClick={() => setIsBellOpen((prev) => !prev)}
+            aria-label="Уведомления"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-            />
-            <circle
-              cx="18"
-              cy="6"
-              r="2.5"
+            <svg
+              viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
-            />
-            <path
-              d="M18 4.75 V7.25 M16.75 6 H19.25"
-              stroke="currentColor"
-              strokeWidth="1"
-            />
-          </svg>
-        </button>
+              className="bell-svg-icon"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
+              />
+              <circle
+                cx="18"
+                cy="6"
+                r="2.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <path
+                d="M18 4.75 V7.25 M16.75 6 H19.25"
+                stroke="currentColor"
+                strokeWidth="1"
+              />
+            </svg>
+          </button>
+
+          {isBellOpen && (
+            <div className="bell-tooltip-popover">
+              <button
+                className="bell-tooltip-close-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsBellOpen(false);
+                }}
+                aria-label="Закрыть"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <p className="bell-tooltip-text">
+                Чтобы быть в курсе событий, подпишитесь на канал ДВ Груп в телеграме
+              </p>
+              <a
+                href="https://t.me/byDVgroup"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bell-tooltip-link"
+              >
+                <svg viewBox="0 0 24 24" className="tg-mini-icon">
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.02-.27 0-.11.02-1.93 1.23-5.46 3.62-.51.35-.98.53-1.39.51-.46-.01-1.34-.26-2-.48-.8-.27-1.44-.42-1.39-.89.03-.25.38-.51 1.07-.78 4.2-1.82 7-3.03 8.4-3.61 4-.17 4.83.69 4.83 1.21z"
+                    fill="currentColor"
+                  />
+                </svg>
+                @byDVgroup
+              </a>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Stories Modal Dialog */}
