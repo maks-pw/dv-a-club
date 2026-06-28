@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import { createPageMetadata } from "../lib/seo";
 
-export const metadata: Metadata = {
-  title: "Политика конфиденциальности | A-Club",
+export const metadata: Metadata = createPageMetadata({
+  title: "Политика конфиденциальности",
   description: "Политика конфиденциальности ООО «ДВ Груп» для сайта DV A-Club",
-};
+  path: "/privacy",
+  noIndex: true,
+});
 
 export default function PrivacyPage() {
   return (

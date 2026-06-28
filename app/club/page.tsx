@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import { createPageMetadata } from "../lib/seo";
+
 const clubMoments = [
   "Литературный вечер при свечах.",
   "Закрытый концерт в необычном пространстве.",
@@ -14,6 +17,14 @@ const luxuryStatements = [
   "Возможность не спешить.",
   "Возможность чувствовать.",
 ];
+
+export const metadata: Metadata = createPageMetadata({
+  title: "Клуб",
+  description:
+    "DV Aesthetic Club — закрытое сообщество для тех, кто выбирает культуру, красоту, развитие и камерные впечатления.",
+  path: "/club",
+  image: "/interior_suzdal.png",
+});
 
 export default function Club() {
   return (

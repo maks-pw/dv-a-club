@@ -3,6 +3,16 @@ import { Cormorant, Montserrat } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Stories from "@/components/Stories";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_OG_IMAGE,
+  JsonLdScript,
+  SITE_LOCALE,
+  SITE_NAME,
+  SITE_URL,
+  organizationJsonLd,
+  websiteJsonLd,
+} from "./lib/seo";
 
 const cormorant = Cormorant({
   variable: "--font-cormorant",
@@ -17,8 +27,36 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "A-Club",
-  description: "A premium social dashboard application layout",
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: DEFAULT_DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: SITE_NAME,
+    description: DEFAULT_DESCRIPTION,
+    url: "/",
+    siteName: SITE_NAME,
+    locale: SITE_LOCALE,
+    type: "website",
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        alt: SITE_NAME,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
 
 export default function RootLayout({
@@ -27,8 +65,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
+    <html lang="ru" className={`${cormorant.variable} ${montserrat.variable}`}>
       <body>
+        <JsonLdScript data={[organizationJsonLd(), websiteJsonLd()]} />
         <div className="layout-container">
           <aside className="layout-sidebar">
             <Sidebar />
@@ -46,4 +85,3 @@ export default function RootLayout({
     </html>
   );
 }
-

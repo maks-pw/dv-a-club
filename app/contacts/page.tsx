@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { createPageMetadata } from "../lib/seo";
 
-export const metadata: Metadata = {
-  title: "Контакты | A-Club",
-  description: "Телефон и почта DV A-Club",
-};
+export const metadata: Metadata = createPageMetadata({
+  title: "Контакты",
+  description:
+    "Свяжитесь с DV Aesthetic Club: телефон, WhatsApp и почта для вопросов об участии в закрытых событиях и путешествиях.",
+  path: "/contacts",
+  image: "/interior_suzdal.png",
+});
 
 const phoneDisplay = "+7 (968) 429-00-00";
 const phoneHref = "tel:+79684290000";

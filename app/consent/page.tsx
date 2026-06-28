@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { createPageMetadata } from "../lib/seo";
 
-export const metadata: Metadata = {
-  title: "Согласие на обработку персональных данных | A-Club",
+export const metadata: Metadata = createPageMetadata({
+  title: "Согласие на обработку персональных данных",
   description:
     "Согласие посетителя сайта на обработку персональных данных ООО «ДВ Груп»",
-};
+  path: "/consent",
+  noIndex: true,
+});
 
 export default function ConsentPage() {
   return (

@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { EVENTS_DATA } from "../../data/events";
+import { createPageMetadata, eventJsonLd, JsonLdScript } from "../../lib/seo";
 
 interface EventPageProps {
   params: Promise<{ id: string }>;
@@ -11,28 +14,40 @@ export async function generateStaticParams() {
   }));
 }
 
+export async function generateMetadata({
+  params,
+}: EventPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const event = EVENTS_DATA.find((e) => e.id === id);
+
+  if (!event) {
+    return createPageMetadata({
+      title: "Событие не найдено",
+      description: "Запрошенное событие не найдено.",
+      path: `/events/${id}`,
+      noIndex: true,
+    });
+  }
+
+  return createPageMetadata({
+    title: event.title,
+    description: event.shortDescription,
+    path: `/events/${event.id}`,
+    image: event.image,
+  });
+}
+
 export default async function EventPage({ params }: EventPageProps) {
   const { id } = await params;
   const event = EVENTS_DATA.find((e) => e.id === id);
 
   if (!event) {
-    return (
-      <div className="main-program-container">
-        <Link href="/" className="event-details-back-link">
-          ← Назад к событиям
-        </Link>
-        <header className="main-program-header">
-          <h1 className="main-program-title">Событие не найдено</h1>
-          <p className="main-program-description">
-            Запрошенное вами событие не существует или было перенесено.
-          </p>
-        </header>
-      </div>
-    );
+    notFound();
   }
 
   return (
     <div className="main-program-container event-details-container">
+      <JsonLdScript data={eventJsonLd(event)} />
       <header className="main-program-header event-details-header">
         <h1 className="main-program-title">{event.title}</h1>
         <p className="main-program-description">{event.shortDescription}</p>
