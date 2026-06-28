@@ -1,33 +1,47 @@
-"use client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Контакты | A-Club",
+  description: "Телефон и почта DV A-Club",
+};
+
+const phoneDisplay = "+7 (968) 429-00-00";
+const phoneHref = "tel:+79684290000";
+const whatsappHref = "https://wa.me/79684290000";
+const email = "info@dv-a-club.ru";
 
 export default function Contacts() {
   return (
-    <div className="main-program-container">
-      <header className="main-program-header">
-        <h1 className="main-program-title">
-          Наши
-          <br />
-          Контакты
-        </h1>
-        <p className="main-program-description">
-          Свяжитесь с нами для бронирования путешествий и вступления в Aesthetic Club.
-        </p>
+    <div className="contacts-page">
+      <header className="contacts-hero">
+        <h1>Контакты</h1>
       </header>
-      
-      <div className="contacts-details-list">
-        <div className="contact-item-row">
-          <span className="contact-label">Телефон:</span>
-          <span className="contact-value">+7 (999) 123-45-67</span>
+
+      <section className="contacts-panel" aria-label="Контактная информация">
+        <div className="contacts-row">
+          <span className="contacts-label">Телефон</span>
+          <div className="contacts-value-group">
+            <a className="contacts-value" href={phoneHref}>
+              {phoneDisplay}
+            </a>
+            <a
+              className="contacts-action"
+              href={whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Связаться
+            </a>
+          </div>
         </div>
-        <div className="contact-item-row">
-          <span className="contact-label">Email:</span>
-          <span className="contact-value">info@dvaesthetic.club</span>
+
+        <div className="contacts-row">
+          <span className="contacts-label">Почта</span>
+          <a className="contacts-value" href={`mailto:${email}`}>
+            {email}
+          </a>
         </div>
-        <div className="contact-item-row">
-          <span className="contact-label">Адрес:</span>
-          <span className="contact-value">Суздаль, ул. Ленина, д. 24</span>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

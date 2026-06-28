@@ -71,12 +71,12 @@ export default function Sidebar() {
 
       {/* Privacy links at the bottom left - Desktop only */}
       <footer className="sidebar-privacy-footer sidebar-desktop-only">
-        <a href="/privacy" className="privacy-link">
+        <Link href="/privacy" className="privacy-link">
           Политика конфиденциальности
-        </a>
-        <a href="/consent" className="privacy-link">
+        </Link>
+        <Link href="/consent" className="privacy-link">
           Согласие на обработку персональных данных
-        </a>
+        </Link>
       </footer>
     </div>
   );
