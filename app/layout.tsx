@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Cormorant, Montserrat } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -103,6 +104,14 @@ export default function RootLayout({
             <main className="layout-main">
               {children}
             </main>
+            <footer className="mobile-privacy-footer">
+              <Link href="/privacy" className="privacy-link">
+                Политика конфиденциальности
+              </Link>
+              <Link href="/consent" className="privacy-link">
+                Согласие на обработку персональных данных
+              </Link>
+            </footer>
           </div>
         </div>
         <CookieBanner />
