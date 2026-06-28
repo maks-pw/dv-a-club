@@ -32,7 +32,7 @@ export default function Club() {
       {/* Hero Section */}
       <section className="club-hero" aria-labelledby="club-title">
         <div className="club-hero-copy">
-          <p className="club-eyebrow">Закрытое сообщество</p>
+          {/* <p className="club-eyebrow">Закрытое сообщество</p> */}
           <h1 id="club-title" className="club-title">
             DV Aesthetic Club
           </h1>
@@ -50,7 +50,7 @@ export default function Club() {
         <figure className="club-hero-media">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/interior_suzdal.png"
+            src="/club-2.jpg"
             alt="Интерьер для камерной встречи DV Aesthetic Club"
             className="club-hero-image"
           />
@@ -99,7 +99,7 @@ export default function Club() {
         <figure className="club-luxury-image-wrap">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/story_japan_2.png"
+            src="/club-1.jpg"
             alt="Культурное путешествие DV Aesthetic Club"
             className="club-luxury-image"
           />

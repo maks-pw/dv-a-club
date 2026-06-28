@@ -708,7 +708,7 @@ h1,
   display: flex;
   flex-direction: column;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(1.65rem, 2.4vw, 2.4rem);
+  font-size: clamp(1.65rem, 2vw, 2.4rem);
   font-weight: 300;
   gap: 24px;
   line-height: 1.4;
@@ -766,6 +766,12 @@ h1,
 
 .club-moment:nth-child(odd) {
   border-right: 1px solid rgba(33, 42, 57, 0.08);
+}
+
+@media (max-width: 767px) {
+  .club-moment:nth-child(odd) {
+    border-right: none;
+  }
 }
 
 .club-moment:nth-child(even) {
@@ -854,6 +860,7 @@ h1,
 }
 
 @media (max-width: 980px) {
+
   .club-hero,
   .club-manifesto,
   .club-luxury {
@@ -1787,7 +1794,7 @@ h1,
 }
 
 .event-card-status-badge.status-announcement {
-  border: 1px solid rgba(227, 185, 126, 0.62);
+  /* border: 1px solid rgba(227, 185, 126, 0.62); */
   color: var(--on-accent);
   background-color: rgba(102, 36, 46, 0.72);
 }
@@ -1975,6 +1982,7 @@ h1,
 }
 
 @media (min-width: 768px) {
+
   .event-details-image-wrapper,
   .event-block-image-wrapper {
     aspect-ratio: 3 / 4;
