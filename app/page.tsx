@@ -6,6 +6,7 @@ import { EVENTS_DATA } from "./data/events";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<"all" | "future" | "past">("all");
+  const hasPastEvents = EVENTS_DATA.some((event) => event.status === "отчет");
 
   const filteredEvents = EVENTS_DATA.filter((event) => {
     if (activeTab === "future") return event.status === "анонс";
@@ -29,12 +30,14 @@ export default function Home() {
           >
             Будущие
           </button>
-          <button
-            onClick={() => setActiveTab("past")}
-            className={`events-filter-tab ${activeTab === "past" ? "active" : ""}`}
-          >
-            Прошедшие
-          </button>
+          {hasPastEvents && (
+            <button
+              onClick={() => setActiveTab("past")}
+              className={`events-filter-tab ${activeTab === "past" ? "active" : ""}`}
+            >
+              Прошедшие
+            </button>
+          )}
         </div>
       </div>
 

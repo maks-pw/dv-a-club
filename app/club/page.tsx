@@ -8,7 +8,7 @@ const clubMoments = [
 ];
 
 const luxuryStatements = [
-  "Впечатления, которые невозможно купить в открытом доступе.",
+  "Настоящая роскошь — это впечатления, которые невозможно купить в открытом доступе.",
   "Люди, с которыми хочется продолжать разговор.",
   "Время, проведенное осознанно.",
   "Возможность не спешить.",
@@ -18,6 +18,7 @@ const luxuryStatements = [
 export default function Club() {
   return (
     <div className="club-page">
+      {/* Hero Section */}
       <section className="club-hero" aria-labelledby="club-title">
         <div className="club-hero-copy">
           <p className="club-eyebrow">Закрытое сообщество</p>
@@ -45,6 +46,7 @@ export default function Club() {
         </figure>
       </section>
 
+      {/* Manifesto Section */}
       <section className="club-manifesto" aria-label="Манифест клуба">
         <div className="club-manifesto-lines">
           <p>Не все путешествия оставляют след.</p>
@@ -63,10 +65,10 @@ export default function Club() {
         </div>
       </section>
 
+      {/* Moments Table Section */}
       <section className="club-section" aria-labelledby="club-stories-title">
         <div className="club-section-heading">
-          <p className="club-kicker">Каждое событие клуба</p>
-          <h2 id="club-stories-title">Отдельная история</h2>
+          <h2 id="club-stories-title">Каждое событие клуба — это отдельная история.</h2>
         </div>
 
         <div className="club-moments-grid">
@@ -81,19 +83,19 @@ export default function Club() {
         </div>
       </section>
 
+      {/* Quiet Luxury Section */}
       <section className="club-luxury" aria-labelledby="club-luxury-title">
-        <div className="club-luxury-image-wrap">
+        <figure className="club-luxury-image-wrap">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/story_japan_2.png"
             alt="Культурное путешествие DV Aesthetic Club"
             className="club-luxury-image"
           />
-        </div>
+        </figure>
         <div className="club-luxury-content">
-          <p className="club-kicker">Тихая роскошь</p>
           <h2 id="club-luxury-title">
-            Мы верим, что настоящая роскошь сегодня - это не вещи.
+            Мы верим, что настоящая роскошь сегодня — это не вещи.
           </h2>
           <div className="club-luxury-list">
             {luxuryStatements.map((statement) => (
@@ -103,9 +105,10 @@ export default function Club() {
         </div>
       </section>
 
+      {/* Closing Signature Section */}
       <section className="club-closing" aria-label="Для кого клуб">
         <p>
-          DV Aesthetic Club - это пространство для тех, кто выбирает жить не
+          DV Aesthetic Club — это пространство для тех, кто выбирает жить не
           поверхностно, а глубоко.
         </p>
       </section>

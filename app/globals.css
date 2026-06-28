@@ -7,6 +7,7 @@
   --gold-hover: #C29C6B;
   --gold-light: #F0C88B;
   --wine: #66242E;
+  --club-blue: #212A39;
   --text-muted: rgba(33, 42, 57, 0.66);
   --surface: rgba(255, 255, 255, 0.36);
   --on-accent: #F5F0E7;
@@ -297,7 +298,7 @@ html::-webkit-scrollbar-thumb:hover {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: var(--wine);
+  color: var(--text-muted);
   font-weight: 600;
 }
 
@@ -342,12 +343,12 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .story-program-item.active .story-avatar-gold-ring {
-  border: 1px solid var(--gold);
-  box-shadow: 0 0 10px rgba(161, 127, 87, 0.22);
+  border: 1px solid var(--club-blue);
+  box-shadow: 0 0 10px rgba(33, 42, 57, 0.22);
 }
 
 .story-program-item:not(.active) .story-avatar-gold-ring {
-  border: 1px solid var(--border);
+  border: 1px solid rgba(33, 42, 57, 0.48);
 }
 
 .story-avatar-frame {
@@ -401,9 +402,9 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .stories-notification-bell:hover {
-  border-color: var(--gold);
-  color: var(--gold);
-  box-shadow: 0 0 10px rgba(161, 127, 87, 0.18);
+  border-color: var(--club-blue);
+  color: var(--club-blue);
+  box-shadow: 0 0 10px rgba(33, 42, 57, 0.18);
 }
 
 .bell-svg-icon {
@@ -484,81 +485,68 @@ h1,
 .club-page {
   display: flex;
   flex-direction: column;
-  gap: clamp(56px, 7vw, 96px);
+  gap: clamp(64px, 8vw, 120px);
   width: 100%;
-  animation: fadeIn 0.6s ease-out;
+  padding-block: clamp(32px, 5vw, 64px);
 }
 
 .club-hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.96fr) minmax(280px, 0.7fr);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);
   align-items: center;
-  gap: clamp(28px, 5vw, 68px);
-  min-height: clamp(430px, 52dvh, 560px);
-  padding-top: clamp(18px, 3vw, 32px);
+  gap: clamp(32px, 5vw, 80px);
   position: relative;
-}
-
-.club-hero::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 72px;
-  height: 1px;
-  background: var(--gold);
 }
 
 .club-hero-copy {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 660px;
-  padding-bottom: 0;
+  gap: 24px;
+  max-width: 620px;
 }
 
 .club-eyebrow,
 .club-kicker {
-  color: var(--wine);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 2.1px;
-  line-height: 1.4;
+  color: var(--gold);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
+  line-height: 1.4;
 }
 
 .club-title {
   color: var(--foreground);
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(3.25rem, 5.65vw, 5.55rem);
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 0.88;
-  max-width: 720px;
+  font-size: clamp(3.2rem, 5.5vw, 5.2rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
 }
 
 .club-subtitle {
   color: var(--foreground);
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(1.45rem, 2.05vw, 2rem);
-  font-weight: 400;
-  line-height: 1.12;
-  max-width: 660px;
+  font-size: clamp(1.35rem, 1.8vw, 1.85rem);
+  font-weight: 350;
+  line-height: 1.3;
+  max-width: 600px;
+  opacity: 0.95;
 }
 
 .club-lead {
-  color: rgba(33, 42, 57, 0.72);
-  font-size: clamp(1rem, 1.35vw, 1.18rem);
-  font-weight: 350;
-  line-height: 1.78;
-  max-width: 560px;
+  color: var(--text-muted);
+  font-size: clamp(0.92rem, 1.1vw, 1.02rem);
+  font-weight: 300;
+  line-height: 1.8;
+  max-width: 540px;
 }
 
 .club-hero-media {
   align-self: stretch;
-  border: 1px solid rgba(161, 127, 87, 0.34);
+  border: none;
   margin: 0;
-  min-height: 360px;
+  min-height: 440px;
   overflow: hidden;
   position: relative;
 }
@@ -583,11 +571,11 @@ h1,
 }
 
 .club-manifesto {
-  border-block: 1px solid rgba(33, 42, 57, 0.16);
+  border-block: 1px solid rgba(161, 127, 87, 0.15);
   display: grid;
-  grid-template-columns: minmax(220px, 0.76fr) minmax(0, 1fr);
-  gap: clamp(28px, 5vw, 64px);
-  padding-block: clamp(34px, 5vw, 58px);
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  padding-block: clamp(64px, 7.5vw, 100px);
 }
 
 .club-manifesto-lines {
@@ -595,92 +583,94 @@ h1,
   display: flex;
   flex-direction: column;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
-  font-weight: 400;
-  gap: 14px;
-  line-height: 1.18;
+  font-size: clamp(1.65rem, 2.4vw, 2.4rem);
+  font-weight: 300;
+  gap: 24px;
+  line-height: 1.4;
+  font-style: italic;
 }
 
 .club-manifesto-text {
-  color: rgba(33, 42, 57, 0.74);
+  color: rgba(33, 42, 57, 0.58);
   display: flex;
   flex-direction: column;
-  font-size: 1rem;
-  font-weight: 350;
-  gap: 18px;
-  line-height: 1.82;
+  font-size: 0.98rem;
+  font-weight: 300;
+  gap: 28px;
+  line-height: 1.95;
+  justify-content: center;
 }
 
 .club-section {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 32px;
 }
 
 .club-section-heading {
-  align-items: end;
   display: flex;
-  gap: 24px;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 .club-section-heading h2,
 .club-luxury-content h2 {
   color: var(--foreground);
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(2.2rem, 4vw, 4rem);
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 1.03;
-  max-width: 620px;
+  font-size: clamp(2.2rem, 3.4vw, 3.4rem);
+  font-weight: 300;
+  line-height: 1.1;
+  max-width: 600px;
 }
 
 .club-moments-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid rgba(33, 42, 57, 0.16);
+  border-top: 1px solid rgba(33, 42, 57, 0.08);
 }
 
 .club-moment {
-  border-bottom: 1px solid rgba(33, 42, 57, 0.16);
+  border-bottom: 1px solid rgba(33, 42, 57, 0.08);
   display: grid;
-  gap: 18px;
-  grid-template-columns: 48px 1fr;
-  min-height: 128px;
-  padding: 26px 24px 24px 0;
+  gap: 24px;
+  grid-template-columns: 56px 1fr;
+  min-height: 130px;
+  padding: 32px 32px 32px 0;
 }
 
 .club-moment:nth-child(odd) {
-  border-right: 1px solid rgba(33, 42, 57, 0.16);
+  border-right: 1px solid rgba(33, 42, 57, 0.08);
 }
 
 .club-moment:nth-child(even) {
-  padding-left: 24px;
+  padding-left: 32px;
 }
 
 .club-moment-number {
   color: var(--gold);
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 1.24rem;
-  line-height: 1;
+  font-size: 1.25rem;
+  font-weight: 300;
+  line-height: 1.2;
+  opacity: 0.8;
 }
 
 .club-moment p {
   color: var(--foreground);
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(1.24rem, 2vw, 1.8rem);
-  font-weight: 400;
-  line-height: 1.22;
+  font-size: clamp(1.15rem, 1.45vw, 1.45rem);
+  font-weight: 300;
+  line-height: 1.35;
 }
 
 .club-luxury {
-  background:
-    linear-gradient(135deg, rgba(33, 42, 57, 0.98), rgba(42, 49, 61, 0.96)),
-    var(--sidebar-bg);
+  background: #212A39;
   color: var(--on-accent);
   display: grid;
-  grid-template-columns: minmax(240px, 0.72fr) minmax(0, 1fr);
-  min-height: 520px;
+  grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1fr);
+  min-height: 480px;
+  border: 1px solid rgba(33, 42, 57, 0.08);
 }
 
 .club-luxury-image-wrap {
@@ -692,9 +682,9 @@ h1,
 .club-luxury-content {
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 28px;
   justify-content: center;
-  padding: clamp(34px, 6vw, 72px);
+  padding: clamp(36px, 5vw, 64px);
 }
 
 .club-luxury-content .club-kicker {
@@ -703,37 +693,39 @@ h1,
 
 .club-luxury-content h2 {
   color: var(--on-accent);
+  font-weight: 300;
 }
 
 .club-luxury-list {
-  border-top: 1px solid rgba(245, 240, 231, 0.22);
+  border-top: 1px solid rgba(245, 240, 231, 0.12);
   display: flex;
   flex-direction: column;
 }
 
 .club-luxury-list p {
-  border-bottom: 1px solid rgba(245, 240, 231, 0.16);
-  color: rgba(245, 240, 231, 0.78);
-  font-size: 0.96rem;
-  font-weight: 350;
+  border-bottom: 1px solid rgba(245, 240, 231, 0.08);
+  color: rgba(245, 240, 231, 0.75);
+  font-size: 0.94rem;
+  font-weight: 300;
   line-height: 1.6;
-  padding-block: 15px;
+  padding-block: 16px;
 }
 
 .club-closing {
   display: flex;
-  justify-content: flex-end;
-  padding-bottom: clamp(12px, 3vw, 34px);
+  justify-content: center;
+  text-align: center;
+  padding-block: clamp(24px, 4vw, 48px);
+  border-top: 1px solid rgba(33, 42, 57, 0.08);
 }
 
 .club-closing p {
   color: var(--foreground);
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(2rem, 4.4vw, 4.65rem);
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 1.02;
-  max-width: 760px;
+  font-size: clamp(1.6rem, 2.8vw, 3rem);
+  font-weight: 300;
+  line-height: 1.2;
+  max-width: 720px;
 }
 
 @media (max-width: 980px) {
@@ -747,51 +739,31 @@ h1,
     min-height: 0;
   }
 
-  .club-hero-copy {
-    padding-bottom: 0;
-  }
-
   .club-hero-media {
-    min-height: 360px;
+    min-height: 340px;
   }
 
   .club-luxury-image-wrap {
-    min-height: 340px;
+    min-height: 320px;
+  }
+
+  .club-manifesto-lines {
+    border-bottom: 1px solid rgba(161, 127, 87, 0.15);
+    padding-bottom: 24px;
   }
 }
 
 @media (max-width: 767px) {
   .club-page {
-    gap: 46px;
-  }
-
-  .club-hero {
-    gap: 26px;
-    padding-top: 10px;
+    gap: clamp(48px, 6vw, 72px);
   }
 
   .club-title {
-    font-size: clamp(3.25rem, 16vw, 4.6rem);
-    line-height: 0.88;
+    font-size: clamp(2.8rem, 10vw, 3.8rem);
   }
 
   .club-subtitle {
-    font-size: clamp(1.42rem, 7vw, 2rem);
-  }
-
-  .club-hero-media,
-  .club-luxury-image-wrap {
-    min-height: 320px;
-  }
-
-  .club-manifesto {
-    padding-block: 30px;
-  }
-
-  .club-section-heading {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
   }
 
   .club-moments-grid {
@@ -801,13 +773,13 @@ h1,
   .club-moment,
   .club-moment:nth-child(even) {
     border-right: 0;
-    grid-template-columns: 38px 1fr;
-    min-height: 108px;
-    padding: 22px 0;
+    grid-template-columns: 40px 1fr;
+    min-height: 0;
+    padding: 24px 0;
   }
 
   .club-luxury-content {
-    padding: 30px 22px 34px;
+    padding: 32px 20px;
   }
 }
 
@@ -1171,10 +1143,10 @@ h1,
 }
 
 .stories-notification-bell.active {
-  border-color: var(--gold);
-  color: var(--gold);
-  box-shadow: 0 0 12px rgba(161, 127, 87, 0.25);
-  background-color: rgba(161, 127, 87, 0.08);
+  border-color: var(--club-blue);
+  color: var(--club-blue);
+  box-shadow: 0 0 12px rgba(33, 42, 57, 0.25);
+  background-color: rgba(33, 42, 57, 0.08);
 }
 
 .bell-tooltip-popover {
@@ -1440,7 +1412,7 @@ h1,
   left: 0;
   width: 100%;
   height: 2px;
-  background: var(--gold-gradient);
+  background: var(--wine);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);

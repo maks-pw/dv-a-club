@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { EVENTS_DATA } from "@/app/data/events";
 
 interface StorySlide {
   id: string;
@@ -18,59 +19,58 @@ interface ProgramStory {
   slides: StorySlide[];
 }
 
+const STORY_COPY: Record<string, string[]> = {
+  "seoul-reboot": [
+    "Закрытая beauty-поездка в Сеул для тех, кто выбирает точность, сервис и доступ к лучшим специалистам.",
+    "Маршрут построен вокруг эстетической медицины, красоты, стиля и гастрономии.",
+    "Каждая встреча и консультация подобраны так, чтобы поездка стала персональным опытом, а не готовым туром.",
+    "Сеул открывается через клиники, дизайнеров, рестораны и адреса, куда не попадают случайно.",
+  ],
+  "paris-fashion-week": [
+    "Неделя моды в Париже как приватный опыт, где показы, вечеринки и новые знакомства становятся частью маршрута.",
+    "Париж раскрывается через места и события, которые обычно остаются за закрытыми дверями индустрии.",
+    "В программе показы, afterparty и fashion networking в камерном формате.",
+    "Каждый день продуман для красивого ритма, сильных впечатлений и стильного контента.",
+    "Дополнительные сервисы помогают собрать образ и прожить Париж с нужной степенью внимания к деталям.",
+    "Это поездка для тех, кто хочет чувствовать себя внутри модной сцены.",
+    "Фокус на атмосфере, доступе и моментах, которые невозможно повторить самостоятельно.",
+    "Paris Fashion Week становится личной историей, а не просто пунктом в календаре.",
+  ],
+};
+
+const getImageCopy = (event: (typeof EVENTS_DATA)[number], url: string, imageIndex: number) => {
+  const contentIndex = event.content.findIndex((block) => block.image === url);
+  const previousBlocks = event.content.slice(0, contentIndex).reverse();
+  const title = imageIndex === 0 ? event.title : previousBlocks.find((block) => block.title)?.title || event.title;
+  const description = STORY_COPY[event.id]?.[imageIndex] || event.shortDescription;
+
+  return {
+    title,
+    description,
+  };
+};
+
 const STORIES_DATA: ProgramStory[] = [
-  {
-    id: "suzdal",
-    name: "Суздаль",
-    image: "/story_suzdal.png",
-    active: true,
-    slides: [
-      {
-        id: "suzdal_1",
-        url: "/story_suzdal_1.png",
-        title: "Русский терем",
-        description: "Погрузитесь в атмосферу тепла и уюта деревянного зодчества.",
-      },
-      {
-        id: "suzdal_2",
-        url: "/story_suzdal_2.png",
-        title: "Рассвет над Каменкой",
-        description: "Утренние туманы и золотые купола древних монастырей.",
-      },
-      {
-        id: "suzdal_3",
-        url: "/story_suzdal_3.png",
-        title: "Чай из самовара",
-        description: "Традиционное чаепитие с блинами и медом у камина.",
-      },
-    ],
-  },
-  {
-    id: "japan",
-    name: "Япония",
-    image: "/story_japan.png",
-    active: false,
-    slides: [
-      {
-        id: "japan_1",
-        url: "/story_japan_1.png",
-        title: "Традиционный рёкан",
-        description: "Комната с татами, раздвижными сёдзи и видом на сад камней.",
-      },
-      {
-        id: "japan_2",
-        url: "/story_japan_2.png",
-        title: "Золотой павильон",
-        description: "Древний храм в Киото в окружении осенних кленов момидзи.",
-      },
-      {
-        id: "japan_3",
-        url: "/story_japan_3.png",
-        title: "Огни Токио",
-        description: "Закат над футуристическим мегаполисом из окна небоскреба.",
-      },
-    ],
-  },
+  ...EVENTS_DATA.map((event, eventIndex) => {
+    const contentImages = event.content.flatMap((block) => (block.image ? [block.image] : []));
+    const images = [event.image, ...contentImages];
+
+    return {
+      id: event.id,
+      name: event.title,
+      image: event.image,
+      active: eventIndex === 0,
+      slides: images.map((url, imageIndex) => {
+        const copy = getImageCopy(event, url, imageIndex);
+
+        return {
+          id: `${event.id}_${imageIndex + 1}`,
+          url,
+          ...copy,
+        };
+      }),
+    };
+  }),
 ];
 
 export default function Stories() {
