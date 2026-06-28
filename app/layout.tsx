@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import Stories from "@/components/Stories";
+import CookieBanner from "@/components/CookieBanner";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_OG_IMAGE,
@@ -104,6 +105,7 @@ export default function RootLayout({
             </main>
           </div>
         </div>
+        <CookieBanner />
       </body>
     </html>
   );

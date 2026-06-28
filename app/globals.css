@@ -2059,3 +2059,111 @@ body.stories-open .layout-container {
 .stories-modal-dialog {
   visibility: visible !important;
 }
+
+/* Cookie Banner Styles */
+.cookie-banner-wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  max-width: 600px;
+  width: calc(100% - 48px);
+  z-index: 10000; /* Must overlay everything */
+  background: rgba(255, 255, 255, 0.96); /* White with minimal transparency */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(33, 42, 57, 0.12); /* Minimal border */
+  border-radius: 4px; /* Minimal rounding */
+  box-shadow: 0 8px 28px rgba(33, 42, 57, 0.1);
+  animation: cookieSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cookieSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cookie-banner-content {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cookie-banner-text {
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--foreground); /* Dark text for light theme */
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.cookie-banner-link {
+  color: var(--wine); /* Wine link */
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.cookie-banner-link:hover {
+  opacity: 0.8;
+}
+
+.cookie-banner-button {
+  align-self: flex-end;
+  flex-shrink: 0;
+  background: var(--wine); /* Wine button */
+  color: #ffffff;
+  border: none;
+  padding: 8px 20px;
+  font-family: var(--font-montserrat), sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 4px; /* Minimal rounding */
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(102, 36, 46, 0.15);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cookie-banner-button:hover {
+  background-color: #7d2e38; /* Lighter wine on hover */
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(102, 36, 46, 0.25);
+}
+
+.cookie-banner-button:active {
+  transform: scale(0.97);
+}
+
+@media (min-width: 768px) {
+  .cookie-banner-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 22px;
+  }
+  
+  .cookie-banner-button {
+    align-self: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .cookie-banner-wrapper {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    width: auto;
+    max-width: none;
+  }
+}
