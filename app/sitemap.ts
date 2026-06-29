@@ -9,14 +9,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: absoluteUrl("/"),
       lastModified,
-      changeFrequency: "weekly",
+      changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: absoluteUrl("/club"),
+      url: absoluteUrl("/events"),
       lastModified,
-      changeFrequency: "monthly",
-      priority: 0.8,
+      changeFrequency: "weekly",
+      priority: 0.9,
     },
     {
       url: absoluteUrl("/contacts"),

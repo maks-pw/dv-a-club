@@ -113,7 +113,7 @@ export default async function EventPage({ params }: EventPageProps) {
       </div>
 
       <div className="event-details-back-link-wrapper" style={{ marginTop: "40px" }}>
-        <Link href="/" className="event-details-back-link">
+        <Link href="/events" className="event-details-back-link">
           ← Назад к событиям
         </Link>
       </div>

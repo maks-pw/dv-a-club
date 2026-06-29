@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import { CalendarDays, Crown, Phone } from "lucide-react";
 
 const navItems = [
-  { name: "События", path: "/", icon: <CalendarDays size={20} strokeWidth={1.5} /> },
-  { name: "Клуб", path: "/club", icon: <Crown size={20} strokeWidth={1.5} /> },
+  { name: "Клуб", path: "/", icon: <Crown size={20} strokeWidth={1.5} /> },
+  { name: "События", path: "/events", icon: <CalendarDays size={20} strokeWidth={1.5} /> },
   { name: "Контакты", path: "/contacts", icon: <Phone size={20} strokeWidth={1.5} /> },
 ];
 
@@ -38,7 +38,10 @@ export default function Sidebar() {
         {/* Navigation Menu */}
         <nav className="sidebar-slant-nav">
           {navItems.map((item) => {
-            const isActive = pathname === item.path;
+            const isActive =
+              item.path === "/events"
+                ? pathname === "/events" || pathname.startsWith("/events/")
+                : pathname === item.path;
             return (
               <Link
                 key={item.name}
@@ -55,7 +58,10 @@ export default function Sidebar() {
       {/* Mobile Fixed Navigation Bottom Bar */}
       <nav className="sidebar-mobile-nav">
         {navItems.map((item) => {
-          const isActive = pathname === item.path;
+          const isActive =
+            item.path === "/events"
+              ? pathname === "/events" || pathname.startsWith("/events/")
+              : pathname === item.path;
           return (
             <Link
               key={item.name}
