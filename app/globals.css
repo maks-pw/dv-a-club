@@ -2008,6 +2008,40 @@ h1,
   max-width: 720px;
 }
 
+.event-block-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+.event-block-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.event-block-list-dot {
+  width: 5px;
+  height: 5px;
+  background-color: var(--wine);
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 0.72em;
+}
+
+.event-block-list-text {
+  margin: 0;
+  max-width: 700px;
+}
+
+.event-block-list-item-title {
+  font-weight: 500;
+  color: var(--foreground);
+  font-family: var(--font-montserrat), sans-serif;
+  letter-spacing: -0.01em;
+}
+
 .event-block-image-wrapper {
   width: 100%;
   max-width: 820px;

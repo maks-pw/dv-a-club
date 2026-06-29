@@ -83,6 +83,33 @@ export default async function EventPage({ params }: EventPageProps) {
 
             {block.text && <p className="event-block-text">{block.text}</p>}
 
+            {block.items && (
+              <div className="event-block-items-list">
+                {block.items.map((item, itemIdx) => {
+                  const colonIndex = item.indexOf(":");
+                  if (colonIndex !== -1) {
+                    const title = item.substring(0, colonIndex + 1);
+                    const description = item.substring(colonIndex + 1);
+                    return (
+                      <div key={itemIdx} className="event-block-list-item">
+                        <span className="event-block-list-dot" />
+                        <p className="event-block-text event-block-list-text">
+                          <span className="event-block-list-item-title">{title}</span>
+                          {description}
+                        </p>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div key={itemIdx} className="event-block-list-item">
+                      <span className="event-block-list-dot" />
+                      <p className="event-block-text event-block-list-text">{item}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             {block.image && (
               <div className="event-block-image-wrapper">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
