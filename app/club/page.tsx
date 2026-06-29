@@ -1,13 +1,32 @@
 import type { Metadata } from "next";
+import { BookOpen, Lightbulb, Map, Music, Palette, Utensils } from "lucide-react";
 import { createPageMetadata } from "../lib/seo";
 
 const clubMoments = [
-  "Литературный вечер при свечах.",
-  "Закрытый концерт в необычном пространстве.",
-  "Ужин, где разговоры становятся важнее меню.",
-  "Путешествие, раскрывающее не достопримечательности, а душу места.",
-  "Лекция, после которой хочется смотреть на мир иначе.",
-  "Творческий проект, который помогает открыть новые грани себя.",
+  {
+    icon: BookOpen,
+    text: "Литературный вечер при свечах.",
+  },
+  {
+    icon: Music,
+    text: "Закрытый концерт в необычном пространстве.",
+  },
+  {
+    icon: Utensils,
+    text: "Ужин, где разговоры становятся важнее меню.",
+  },
+  {
+    icon: Map,
+    text: "Путешествие, раскрывающее не достопримечательности, а душу места.",
+  },
+  {
+    icon: Lightbulb,
+    text: "Лекция, после которой хочется смотреть на мир иначе.",
+  },
+  {
+    icon: Palette,
+    text: "Творческий проект, который помогает открыть новые грани себя.",
+  },
 ];
 
 const luxuryStatements = [
@@ -83,12 +102,12 @@ export default function Club() {
         </div>
 
         <div className="club-moments-grid">
-          {clubMoments.map((moment, index) => (
-            <article className="club-moment" key={moment}>
-              <span className="club-moment-number">
-                {String(index + 1).padStart(2, "0")}
+          {clubMoments.map(({ icon: Icon, text }) => (
+            <article className="club-moment" key={text}>
+              <span className="club-moment-icon" aria-hidden="true">
+                <Icon />
               </span>
-              <p>{moment}</p>
+              <p>{text}</p>
             </article>
           ))}
         </div>
@@ -106,7 +125,7 @@ export default function Club() {
         </figure>
         <div className="club-luxury-content">
           <h2 id="club-luxury-title">
-            Мы верим, что настоящая роскошь сегодня — это не вещи.
+            Мы знаем, что настоящая роскошь сегодня — это не вещи.
           </h2>
           <div className="club-luxury-list">
             {luxuryStatements.map((statement) => (
