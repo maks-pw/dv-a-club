@@ -36,13 +36,36 @@ const STORY_COPY: Record<string, string[]> = {
     "Фокус на атмосфере, доступе и моментах, которые невозможно повторить самостоятельно.",
     "Paris Fashion Week становится личной историей, а не просто пунктом в календаре.",
   ],
+  "renoir-traces": [
+    "Мы приглашаем вас прожить пять дней в Париже так, как когда-то жил великий художник Пьер Огюст Ренуар.",
+    "",
+    "",
+    "",
+    "",
+  ],
+};
+
+const STORY_TITLES: Record<string, Record<number, string>> = {
+  "renoir-traces": {
+    1: "Пленэр в одном из самых живописных парков Парижа."
+  }
 };
 
 const getImageCopy = (event: (typeof EVENTS_DATA)[number], url: string, imageIndex: number) => {
+  const overriddenTitle = STORY_TITLES[event.id]?.[imageIndex];
+
+  const storyOnlyImg = event.storyOnlyImages?.find((img) => img.image === url);
+  if (storyOnlyImg) {
+    return {
+      title: overriddenTitle ?? storyOnlyImg.title,
+      description: STORY_COPY[event.id]?.[imageIndex] ?? event.shortDescription,
+    };
+  }
+
   const contentIndex = event.content.findIndex((block) => block.image === url);
   const previousBlocks = event.content.slice(0, contentIndex).reverse();
-  const title = imageIndex === 0 ? event.title : previousBlocks.find((block) => block.title)?.title || event.title;
-  const description = STORY_COPY[event.id]?.[imageIndex] || event.shortDescription;
+  const title = overriddenTitle ?? (imageIndex === 0 ? event.title : previousBlocks.find((block) => block.title)?.title || event.title);
+  const description = STORY_COPY[event.id]?.[imageIndex] ?? event.shortDescription;
 
   return {
     title,
@@ -52,8 +75,9 @@ const getImageCopy = (event: (typeof EVENTS_DATA)[number], url: string, imageInd
 
 const STORIES_DATA: ProgramStory[] = [
   ...EVENTS_DATA.map((event, eventIndex) => {
-    const contentImages = event.content.flatMap((block) => (block.image ? [block.image] : []));
-    const images = [event.image, ...contentImages];
+    const contentImages = event.content.flatMap((block) => (block.image && !block.excludeFromStory ? [block.image] : []));
+    const storyOnlyImagesUrls = event.storyOnlyImages?.map((img) => img.image) || [];
+    const images = [event.image, ...contentImages, ...storyOnlyImagesUrls];
 
     return {
       id: event.id,
