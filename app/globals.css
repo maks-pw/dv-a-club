@@ -325,6 +325,35 @@ html::-webkit-scrollbar-thumb:hover {
   display: flex;
   gap: 10px;
   align-items: center;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(161, 127, 87, 0.4) transparent;
+  
+  /* Vertical padding to prevent hover scale and shadows from being clipped */
+  padding-block: 8px;
+  margin-block: -8px;
+  
+  /* Smooth touch scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar styling for Webkit engines */
+.stories-list-inner::-webkit-scrollbar {
+  height: 4px;
+}
+
+.stories-list-inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stories-list-inner::-webkit-scrollbar-thumb {
+  background-color: rgba(161, 127, 87, 0.35);
+  border-radius: 4px;
+}
+
+.stories-list-inner::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(161, 127, 87, 0.6);
 }
 
 .story-program-item {
@@ -338,6 +367,7 @@ html::-webkit-scrollbar-thumb:hover {
   outline: none;
   transition: transform 0.2s ease;
   width: 90px;
+  flex-shrink: 0;
 }
 
 .story-program-item:hover {
@@ -395,6 +425,12 @@ html::-webkit-scrollbar-thumb:hover {
   flex: 1;
   height: 1px;
   background-color: var(--border);
+}
+
+@media (max-width: 768px) {
+  .stories-horizontal-divider {
+    display: none;
+  }
 }
 
 
@@ -1390,6 +1426,7 @@ h1,
 .stories-bell-container {
   position: relative;
   display: inline-flex;
+  flex-shrink: 0;
 }
 
 .stories-notification-bell.active {
